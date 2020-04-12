@@ -1,41 +1,26 @@
-$CygWinSetupDir = "$env:temp\cygInstall"
-$CygWinInstallDir = "C:\Cygwin"
-
-if (!(Test-Path -Path $CygWinSetupDir -PathType Container)) {
-  $null = New-Item -Type Directory -Path $CygWinSetupDir -Force
-}
-
 function Install-Chocolatey {
   Invoke-WebRequest -useb https://chocolatey.org/install.ps1 | Invoke-Expression
 }
 
-function Install-Cygwin {
-  if (Test-Path -Path $CygWinInstallDir -PathType Container) {
-    return
-  }
-  Invoke-WebRequest -Uri "https://cygwin.com/setup-x86_64.exe" -OutFile "$CygWinSetupDir\setup.exe"
-  Start-Process -Wait -FilePath "$CygWinSetupDir\setup.exe" -ArgumentList "-q -n -l $CygWinSetupDir -s http://cygwin.mirror.constant.com -R $CygWinInstallDir"
-}
-
-function Install-Cygwin-Package ($package) {
-  Start-Process -Wait -FilePath "$CygWinSetupDir\setup.exe" -ArgumentList "-q -n -l $CygWinSetupDir -s http://cygwin.mirror.constant.com -R $CygWinInstallDir -P $package"
-}
-
 function Install-Choco-Packages {
-  choco install --no-progress --limit-output --yes notepad2-mod vscode GoogleChrome autohotkey openssh nodejs yarn
+  choco install --no-progress --limit-output --yes vim vscode GoogleChrome autohotkey openssh
+  choco install --no-progress --limit-output --yes nodejs yarn
+  choco install --no-progress --limit-output --yes python3
 }
 
-Install-Cygwin
+function Trusty-Path-Reload {
+  # reload Path workded better than dot sourcing
+  $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+}
+
+function Install-Python-Packages {
+  # this needs elevated shell, better do it from here.
+  python -m pip install --upgrade pip
+  pip install pywin32
+}
+
 Install-Chocolatey
-
-# reload Path workded better than dot sourcing
-$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-
-Install-Cygwin-Package "python3"
-Install-Cygwin-Package "python3-setuptools"
-Install-Cygwin-Package "vim"
+Trusty-Path-Reload
 Install-Choco-Packages
-
-# Todo: find a way to call this from a Cygwin instance
-# python3 -m ensurepip
-
+Trusty-Path-Reload
+Install-Python-Packages
