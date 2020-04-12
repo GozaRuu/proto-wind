@@ -19,6 +19,13 @@ Vagrant.configure("2") do |config|
     v.customize ["modifyvm", :id, "--draganddrop", "hosttoguest"]
     v.customize ["modifyvm", :id, "--usb", "off"]
     v.linked_clone = true 
+
+    # add optical drive
+    v.customize ["storageattach", :id,
+                  "--storagectl", "IDE Controller",
+                  "--port", "0", "--device", "1",
+                  "--type", "dvddrive",
+                  "--medium", "emptydrive"]
   end
 
   config.vm.define :proto_wind do |node|
