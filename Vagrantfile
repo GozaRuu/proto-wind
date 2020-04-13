@@ -8,6 +8,21 @@ Vagrant.configure("2") do |config|
   config.vm.box_version = "2020.04.05"
   config.vm.guest = :windows
   config.vm.box_check_update = true
+  config.windows.halt_timeout = 10
+  config.winrm.username = "vagrant"
+  config.winrm.password = "vagrant"
+  config.vagrant.plugins = ["vagrant-vbguest"]
+
+  # config.trigger.after :up do |trigger|
+  #   # TODO: add this as a trigger after :up only once
+  #   vagrant vbguest --do install
+  # end
+
+  if Vagrant.has_plugin?("vagrant-vbguest") then
+    config.vbguest.auto_update = false
+  end
+
+
   config.vm.provider :virtualbox do |v, override|
     v.gui = true
     v.customize ["modifyvm", :id, "--memory", "4096"]
