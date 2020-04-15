@@ -34,8 +34,11 @@ The VM already has pywin32 installed
 
 On your system do::
     python3 -m venv env
+    
     source env/bin/activate
-    pip3 install -r requirements.txt
+    
+    pip3 install -r requirements_dev.txt
+    
     make install
 
 Release
