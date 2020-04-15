@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """The setup script."""
 
@@ -10,9 +10,9 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = ['pywin32', ]
+requirements = []
 
-setup_requirements = ['pytest-runner', ]
+setup_requirements = ['pytest-runner', 'sphinx', ]
 
 test_requirements = ['pytest>=3', ]
 
